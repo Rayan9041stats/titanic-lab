@@ -53,7 +53,7 @@
     "href": "index.html#ai-use-disclosure",
     "title": "Titanic Survival Analysis",
     "section": "AI-use disclosure",
-    "text": "AI-use disclosure\nI used Perplexity AI to assist with generating, amending and understanding R code for this assignment, including model diagnostics, formatted tables, and the predicted-probability visualization. In addition, I used AI assistance to ensure that my interpretations were correct, to help with coefficient interpretations, results summary, and discussion of findings and limitations. The AI Prompt Appendix includes the prompts used for this assignment."
+    "text": "AI-use disclosure\nI used Perplexity AI to assist with generating, amending and/or understanding R code for this assignment, including model diagnostics, formatted tables, and the predicted-probability visualization. In addition, I used AI assistance to ensure that my interpretations were correct, to help with coefficient interpretations, results summary, and discussion of findings and limitations. The AI Prompt Appendix includes the prompts used for this assignment."
   },
   {
     "objectID": "index.html#ai-prompt-appendix",

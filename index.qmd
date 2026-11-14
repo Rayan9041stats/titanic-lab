@@ -609,7 +609,8 @@ performance_table |>
 ```
 ### Summary of findings
 I compared four nested binary logistic regression models to examine how sex, ticket class, and age were associated with survival on the Titanic among `r nobs(preferred_model)` passengers with complete data. Model 3, which included all three predictors, was selected because the model comparisons supported its improved fit and the diagnostic checks were generally reassuring. It also fit better than the intercept-only model (likelihood-ratio chi-square = `r sprintf("%.2f", overall_chisq)`, df = `r overall_df`, p < .001). In the preferred model, female passengers had `r coef_value("Sex.Binary", "odds_ratio")` times the odds of survival of male passengers, holding ticket class and age constant. Second- and third-class passengers had `r coef_value("Pclass2", "odds_ratio")` and `r coef_value("Pclass3", "odds_ratio")` times the odds of survival of first-class passengers, respectively, holding sex and age constant. Each additional year of age was associated with an odds ratio of `r coef_value("Age", "odds_ratio")`, holding sex and ticket class constant. Together, these findings indicate that survival was associated with sex, ticket class, and age, with higher survival odds among female passengers, first-class passengers, and younger passengers. Importantly, these results do not describe causal effects. Instead, they describe adjusted associations, and the age finding should be interpreted cautiously because the diagnostic plot suggested that a constant age slope may not fully capture the relationship across all ages.
-## Predicted probabilities
+
+### Predicted probabilities
 ```{r}
 #| label: predicted-probabilities-age
 #| fig-width: 7

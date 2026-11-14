@@ -124,8 +124,10 @@ categorical_counts |>
   )
 ```
 The analysis includes `r nrow(titanic)` passengers with complete information on survival, sex, age, and ticket class. The mean age was `r round(mean(titanic$Age), 2)` years (SD = `r round(sd(titanic$Age), 2)`), with ages ranging from `r min(titanic$Age)` to `r max(titanic$Age)` years. The categorical groups were not evenly distributed: `r sum(titanic$Sex == "male")` passengers were male and `r sum(titanic$Sex == "female")` were female. First, second, and third class contained `r sum(titanic$Pclass == "1")`, `r sum(titanic$Pclass == "2")`, and `r sum(titanic$Pclass == "3")` passengers, respectively. Overall, `r sum(titanic$Survived == 1)` passengers survived and `r sum(titanic$Survived == 0)` died. These summaries describe the composition of the complete-case sample. We will examine comparisons of survival between different passenger groups in later analysis.
-## Predictions and model specification
+
+### Predictions and model specification
 I expect survival to be associated with sex, ticket class, and age. I predict that female passengers had higher survival odds than male passengers, which is consistent with the possibility that women were prioritized during evacuation. I also expect first-class passengers to have higher survival odds than second- and third-class passengers, potentially due to differences in access to evacuation routes and resources. Finally, I expect younger passengers to have higher survival odds if children were prioritized.
+
 ### Four competing models
 
 ```{r}
@@ -162,7 +164,9 @@ mod3 <- glmmTMB(
 ### Interpretation of the intercept
 
 In mod1, the intercept represents the log-odds of survival for male passengers because Sex. Binary is coded 0 for males. In mod2, the intercept represents the log-odds of survival for male passengers in first class, which is the reference ticket category. In mod3, the intercept represents the log-odds of survival for male passengers in first class at age zero. So, the intercept changes meaning as predictors are added. The age-zero intercept provides a mathematical reference point rather than describing a typical passenger.
-## Model comparisons
+
+### Model comparisons
+
 ### Nested-model likelihood-ratio tests
 
 ```{r}
@@ -246,7 +250,8 @@ comparison_table |>
 ### Interpretation of model comparisons
 
 Model fit improved with each addition of predictors. Adding sex to the null model greatly reduced AIC from 966.52 to 754.70 and BIC from 971.09 to 763.84. The likelihood-ratio test indicated that this improvement was statistically significant with chi-square(1) = 213.82, p < .001. Adding ticket class further improved fit, chi-square(2) = 78.27, p < .001, reducing AIC to 680.43 and BIC to 698.71. Adding age produced an additional significant improvement, chi-square(1) = 25.15, p < .001. Model 3 had the lowest AIC (657.28) and BIC (680.14) among the four candidate models. So, both information criteria and the likelihood-ratio tests support retaining all three predictors at this stage. Although AIC and BIC penalize additional model complexity, the improvements in fit outweighed these penalties. Model 3 is therefore the leading candidate, subject to diagnostic assessment.
-## Diagnostics
+
+### Diagnostics
 Model 3 was selected for initial diagnostic assessment because it had the lowest AIC and BIC, and each addition of predictors significantly improved model fit.
 
 ### Simulated residual diagnostics
@@ -281,6 +286,7 @@ DHARMa::plotResiduals(
 )
 ```
 The residual-versus-age plot showed a smooth curve close to 0.5 across most of the adult age range, with departures among the youngest and oldest passengers. These patterns suggest that a single linear age term on the log-odds scale may not fully capture the age–survival relationship. The upward curve at the oldest ages should be interpreted cautiously since relatively few observations occur in that range. This visual diagnostic does not establish statistically significant nonlinearity, but it identifies a limitation of the specified model.
+
 ### Collinearity
 
 ```{r}
@@ -291,6 +297,7 @@ collinearity_results <- performance::check_collinearity(mod3)
 collinearity_results
 ```
 The collinearity assessment indicated little overlap among predictors that would inflate coefficient uncertainty. VIF values were 1.07 for sex, 1.42 for ticket class, and 1.33 for age. These results suggest that problematic multicollinearity is not evident in this model.
+
 ### Complete or quasi-complete separation
 
 ```{r}
@@ -306,6 +313,7 @@ separation_check <- glm(
 separation_check
 ```
 A formal separation check using the same predictors as Model 3 detected no complete separation and no quasi-complete separation. The check indicated that finite maximum-likelihood estimates exist for all coefficients. Separation therefore does not appear to be a problem for this model.
+
 ### Events per predictor coefficient
 
 ```{r}
@@ -346,6 +354,7 @@ events_summary |>
   )
 ```
 The complete-case sample included 290 survivors and 424 deaths. Model 3 estimated four predictor coefficients: one for sex, two for ticket class, and one for age. Dividing the smaller outcome count by the number of predictor coefficients gave 72.50 events per coefficient.
+
 ### Potentially influential observations
 
 ```{r}
@@ -443,10 +452,13 @@ influence_comparison |>
   )
 ```
 Cook’s distance identified 47 observations above the screening threshold of 4/n (approximately 0.00560), with a maximum Cook’s distance of 0.02905. These observations were treated as cases for investigation instead of being automatically removed. A sensitivity analysis removing the passenger with the largest Cook’s distance preserved the direction of every predictor coefficient. The odds ratio for sex changed from 12.463 to 12.936. The second- and third-class odds ratios changed from 0.270 to 0.253 and from 0.076 to 0.069, respectively. The age odds ratio changed from 0.964 to 0.961. So, the broad pattern of associations was not driven by this single observation.
+
 ### Summary of diagnostic findings
 
 Model 3 converged successfully and had a positive-definite Hessian. The collinearity check indicated low VIF values, and the formal separation check detected no complete separation and no quasi-complete separation. There were 72.50 observations in the smaller outcome group per predictor coefficient, providing a reassuring events-per-coefficient ratio without guaranteeing model adequacy. The DHARMa uniformity test did not detect an overall departure from the expected residual distribution (p = .512), and the outlier test was not statistically significant at the .05 level (p = .057). A numerical warning arose when fitting the diagnostic quantile curves. So, the plots were regenerated using a smooth curve instead, without changing the logistic model. These revised curves were used for visual assessment rather than formal quantile testing. Influence screening flagged observations for investigation, but removing the single most influential passenger did not change the directions of the estimated associations. Overall, Model 3 remains the preferred candidate among the four prescribed models, but the residual-versus-age plot suggests possible inadequacy of its linear age term, particularly at the age extremes. The age coefficient reflects the model’s assumption that each additional year of age changes the log-odds of survival by the same amount. Importantly, it does not confirm that this relationship holds across all ages. Exploring more flexible ways to model age would be a useful next step beyond the four models considered here.
-## Preferred model and interpretation
+
+### Preferred model and interpretation
+
 ### Model selection
 
 I selected Model 3, which includes sex, ticket class, and age, as the most defensible model among the four candidates. The nested-model likelihood-ratio tests showed that each successive addition improved model fit, and Model 3 had the lowest AIC and BIC. Although this model includes more predictor coefficients than the alternatives, the improvement in fit supports keeping all three predictors. Diagnostic checks showed successful convergence, low collinearity, and no detected separation. Removing the single most influential observation also left the direction and broad interpretation of the estimated associations unchanged. However, the residual-versus-age plot suggested that the linear age term may not fully capture the relationship across all ages. Model 3 therefore provides the best-supported balance of fit, complexity, and interpretability among the prescribed models, allowing the association between each passenger characteristic and survival to be examined while holding the other included characteristics constant.
@@ -544,6 +556,7 @@ coef_value <- function(term_name, column_name, digits = 3) {
 Holding ticket class and age constant, female passengers had log-odds of survival that were `r coef_value("Sex.Binary", "estimate")` higher than those of male passengers. Their odds of survival were `r coef_value("Sex.Binary", "odds_ratio")` times those of male passengers (95% CI: `r coef_value("Sex.Binary", "or_low")` to `r coef_value("Sex.Binary", "or_high")`). Holding sex and age constant, second-class passengers had a log-odds difference of `r coef_value("Pclass2", "estimate")` compared with first-class passengers, corresponding to odds of survival that were `r coef_value("Pclass2", "odds_ratio")` times those of first-class passengers (95% CI: `r coef_value("Pclass2", "or_low")` to `r coef_value("Pclass2", "or_high")`). Third-class passengers had a corresponding log-odds difference of `r coef_value("Pclass3", "estimate")`, with odds of survival that were `r coef_value("Pclass3", "odds_ratio")` times those of first-class passengers (95% CI: `r coef_value("Pclass3", "or_low")` to `r coef_value("Pclass3", "or_high")`), holding sex and age constant. Finally, holding sex and ticket class constant, each additional year of age was associated with a change of `r coef_value("Age", "estimate")` in the log-odds of survival. The corresponding odds ratio was `r coef_value("Age", "odds_ratio")` per year (95% CI: `r coef_value("Age", "or_low")` to `r coef_value("Age", "or_high")`), indicating lower survival odds with increasing age under the model's constant age-slope assumption.
 
 The intercept of `r coef_value("(Intercept)", "estimate")` represents the estimated log-odds of survival for a male passenger in first class at age zero. Converting the intercept from log-odds to odds gives baseline survival odds of `r coef_value("(Intercept)", "odds_ratio")`. These odds apply to a male passenger in first class at age zero, rather than comparing two passenger groups. Because age was not centered, this reference profile does not represent a typical passenger.
+
 ### Overall model performance
 ```{r}
 #| label: model-performance-table

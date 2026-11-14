@@ -165,7 +165,7 @@ mod3 <- glmmTMB(
 
 In mod 0, the intercept represents the log-odds of survival for the complete-case sample because the model contains no predictors. In mod1, the intercept represents the log-odds of survival for male passengers because Sex. Binary is coded 0 for males. In mod2, the intercept represents the log-odds of survival for male passengers in first class, which is the reference ticket category. In mod3, the intercept represents the log-odds of survival for male passengers in first class at age zero. So, the intercept changes meaning as predictors are added. The age-zero intercept provides a mathematical reference point rather than describing a typical passenger.
 
-### Model comparisons
+## Model comparisons
 
 ### Nested-model likelihood-ratio tests
 
@@ -251,7 +251,7 @@ comparison_table |>
 
 Model fit improved with each addition of predictors. Adding sex to the null model greatly reduced AIC from 966.52 to 754.70 and BIC from 971.09 to 763.84. The likelihood-ratio test indicated that this improvement was statistically significant with chi-square(1) = 213.82, p < .001. Adding ticket class further improved fit, chi-square(2) = 78.27, p < .001, reducing AIC to 680.43 and BIC to 698.71. Adding age produced an additional significant improvement, chi-square(1) = 25.15, p < .001. Model 3 had the lowest AIC (657.28) and BIC (680.14) among the four candidate models. So, both information criteria and the likelihood-ratio tests support retaining all three predictors at this stage. Although AIC and BIC penalize additional model complexity, the improvements in fit outweighed these penalties. Model 3 is therefore the leading candidate, subject to diagnostic assessment.
 
-### Diagnostics
+## Diagnostics
 Model 3 was selected for initial diagnostic assessment because it had the lowest AIC and BIC, and each addition of predictors significantly improved model fit.
 
 ### Simulated residual diagnostics
@@ -457,7 +457,7 @@ Cook’s distance identified 47 observations above the screening threshold of 4/
 
 Model 3 converged successfully and had a positive-definite Hessian. The collinearity check indicated low VIF values, and the formal separation check detected no complete separation and no quasi-complete separation. There were 72.50 observations in the smaller outcome group per predictor coefficient, providing a reassuring events-per-coefficient ratio without guaranteeing model adequacy. The DHARMa uniformity test did not detect an overall departure from the expected residual distribution (p = .512), and the outlier test was not statistically significant at the .05 level (p = .057). A numerical warning arose when fitting the diagnostic quantile curves. So, the plots were regenerated using a smooth curve instead, without changing the logistic model. These revised curves were used for visual assessment rather than formal quantile testing. Influence screening flagged observations for investigation, but removing the single most influential passenger did not change the directions of the estimated associations. Overall, Model 3 remains the preferred candidate among the four prescribed models, but the residual-versus-age plot suggests possible inadequacy of its linear age term, particularly at the age extremes. The age coefficient reflects the model’s assumption that each additional year of age changes the log-odds of survival by the same amount. Importantly, it does not confirm that this relationship holds across all ages. Exploring more flexible ways to model age would be a useful next step beyond the four models considered here.
 
-### Preferred model and interpretation
+## Preferred model and interpretation
 
 ### Model selection
 

@@ -163,7 +163,7 @@ mod3 <- glmmTMB(
 ```
 ### Interpretation of the intercept
 
-In mod1, the intercept represents the log-odds of survival for male passengers because Sex. Binary is coded 0 for males. In mod2, the intercept represents the log-odds of survival for male passengers in first class, which is the reference ticket category. In mod3, the intercept represents the log-odds of survival for male passengers in first class at age zero. So, the intercept changes meaning as predictors are added. The age-zero intercept provides a mathematical reference point rather than describing a typical passenger.
+In mod 0, the intercept represents the log-odds of survival for the complete-case sample because the model contains no predictors. In mod1, the intercept represents the log-odds of survival for male passengers because Sex. Binary is coded 0 for males. In mod2, the intercept represents the log-odds of survival for male passengers in first class, which is the reference ticket category. In mod3, the intercept represents the log-odds of survival for male passengers in first class at age zero. So, the intercept changes meaning as predictors are added. The age-zero intercept provides a mathematical reference point rather than describing a typical passenger.
 
 ### Model comparisons
 
